@@ -46,6 +46,7 @@ inline double SubTimeSpecToUs(struct timespec endTime, struct timespec startTime
 	timeDiff += endTime.tv_nsec/1000;
 	timeDiff -= startTime.tv_nsec/1000;
 
+	// !!! attention, here may be removed, as timeDiff is us already !!!
 	return (double)timeDiff/1000000;
 }
 #endif

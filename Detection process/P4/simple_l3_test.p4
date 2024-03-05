@@ -166,8 +166,8 @@ control Level(inout my_ingress_headers_t hdr,
 		//meta.flag=2;		
     }                                                           
 
-    action SetClass(bit<16> node_id, bit<8> class_id) {
-         meta.class_id = class_id;
+    action SetBenign(bit<16> node_id, bit<8> class_id) {
+         meta.class_id = class_id;  // cls = 0
          meta.prev_node_id = node_id;
          ig_tm_md.ucast_egress_port = (bit<9>)class_id; // for debug
 		  
@@ -175,6 +175,13 @@ control Level(inout my_ingress_headers_t hdr,
 		 //meta.flag=1;
          exit;
      }
+
+    action clone_to_cpu(bit<16> node_id, bit<8> class_id){
+         meta.class_id = class_id;  // cls = 1
+         meta.prev_node_id = node_id;    
+         ig_tm_md.copy_to_cpu = 0x1;
+         exit;
+    }
      
     table node {
           key = {
@@ -199,7 +206,7 @@ control Level(inout my_ingress_headers_t hdr,
             //meta.flag[2:2]:ternary;  // RST
             // meta.flag[0:0]:;  // FIN
          }
-         actions = {CheckFeature; SetClass;}
+         actions = {CheckFeature; SetBenign; clone_to_cpu;}
          size = node_size;
      }
        

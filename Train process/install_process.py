@@ -67,15 +67,26 @@ def export_p4_rules(tree, stages, command_file):
                 if (tree_n_classes != 1 and tree_n_outputs == 1):
                     class_id = int(tree_classes[class_id])
 
-                # prev_node_id, threshold_flag
-                str_ = ('bfrt.simple_l3_test.pipe.Ingress.' + \
-                        'level%d.node.add_with_SetClass(%d, %d') % (
-                           level % stages, prev_node, thresh_flag)
-                for i in FEATURE_BITS:
-                    str_ += ', %d, %d' % (0, (1 << i) - 1)
-                # MATCH_PRIORITY, node_id, class_id
-                str_ += ', 0, %d, %d)\n' % (curr_node, PORTS[class_id])
-                command_file.write(str_)
+                if class_id == 0:
+                    # prev_node_id, threshold_flag
+                    str_ = ('bfrt.simple_l3_test.pipe.Ingress.' + \
+                            'level%d.node.add_with_SetBenign(%d, %d') % (
+                               level % stages, prev_node, thresh_flag)
+                    for i in FEATURE_BITS:
+                        str_ += ', %d, %d' % (0, (1 << i) - 1)
+                    # MATCH_PRIORITY, node_id, class_id
+                    str_ += ', 0, %d, %d)\n' % (curr_node, PORTS[class_id])
+                    command_file.write(str_)
+                elif class_id == 1:
+                    # prev_node_id, threshold_flag
+                    str_ = ('bfrt.simple_l3_test.pipe.Ingress.' + \
+                            'level%d.node.add_with_clone_to_cpu(%d, %d') % (
+                               level % stages, prev_node, thresh_flag)
+                    for i in FEATURE_BITS:
+                        str_ += ', %d, %d' % (0, (1 << i) - 1)
+                    # MATCH_PRIORITY, node_id, class_id
+                    str_ += ', 0, %d, %d)\n' % (curr_node, PORTS[class_id])
+                    command_file.write(str_)
             else:  # children
                 feature_id = tree_feature[curr_node]
                 threshold = int(float(tree_threshold[curr_node]))

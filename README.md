@@ -1,4 +1,4 @@
-# Soter of DL Enhanced In-Network Attack Detection in IEEE SRDS22 
+# Soter/Soterv2 of DL Enhanced In-Network Attack Detection in SRDS22 and TDSC24
 #### More information about us https://xgr19.github.io  
 
 ## Abstract:
